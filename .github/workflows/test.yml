@@ -1,48 +1,40 @@
-name: CI Test & Coverage
+name: CI Test & Coverage Badge
 
 on:
   push:
-    branches: [ "**" ]
+    branches: [main, UnitTest]
   pull_request:
-    branches: [ "**" ]
+    branches: [main]
 
 jobs:
   test:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: "18"
 
-      - name: Install dependencies
+      - name: Install deps
+        run: npm install
+
+      - name: Run tests
+        run: npm test -- --coverage
+
+      - name: Generate coverage badge
+        uses: cuchi/jest-badges-action@v2
+        with:
+          coverage-summary-path: coverage/coverage-summary.json
+          output-path: coverage/badges
+
+      - name: Commit coverage badge
         run: |
-          npm install
-
-      - name: Run tests with coverage
-        run: |
-          npm test -- --coverage
-        continue-on-error: false
-
-      - name: Upload coverage as artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-report
-          path: coverage/
-
-      - name: Generate Coverage Badge
-        uses: tj-actions/coverage-badge@v2
-        with:
-          coverage-summary: coverage/coverage-summary.json
-
-      - name: Update README with badge
-        uses: peter-evans/create-pull-request@v6
-        with:
-          commit-message: "docs: update coverage badge"
-          branch: update-coverage-badge
-          title: "Update Coverage Badge"
-          body: "Auto update coverage badge."
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add coverage/badges
+          git commit -m "chore: update coverage badge" || echo "No changes"
+          git push
