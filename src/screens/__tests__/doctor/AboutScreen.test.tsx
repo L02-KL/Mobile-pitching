@@ -25,9 +25,9 @@ jest.mock('@expo/vector-icons', () => ({
   Ionicons: 'Ionicons',
 }));
 
-jest.mock('../../../assets/logo.png', () => 'test-logo-path');
+jest.mock('../../../../assets/logo.png', () => 'test-logo-path');
 
-jest.mock('../../components/BottomNavigationBar', () => 'BottomNavigationBar');
+jest.mock('../../../components/BottomNavigationBar', () => 'BottomNavigationBar');
 
 describe('AboutScreen', () => {
   const renderScreen = () => {
@@ -103,11 +103,5 @@ describe('AboutScreen', () => {
     expect(mockGoBack).toHaveBeenCalled();
   });
 
-  it('renders BottomNavigationBar with correct props', () => {
-    const { UNSAFE_getByType } = renderScreen(); // Using UNSAFE_getByType for demonstration
-    
-    // In real test, you might use a different approach
-    // This shows the BottomNavigationBar is part of the component
-    expect(true).toBeTruthy(); // Placeholder assertion
-  });
+
 });
